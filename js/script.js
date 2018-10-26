@@ -47,7 +47,34 @@ var celine = {
   },
 };
 
-var pipe1 = new Pipe(970, 0, 30, 250);
+var allPipes = [
+  new Pipe(650, 0, 30, 250),
+  new Pipe(800, 350, 30, 200),
+  new Pipe(970, 0, 30, 250),
+  new Pipe(1120, 300, 30, 250),
+  new Pipe(1270, 0, 45, 200),
+  new Pipe(1420, 300, 30, 250),
+];
+
+var gameOver = {
+  opacity: 0,
+  drawMe: function () {
+    this.opacity += 0.01;
+
+    ctx.globalAlpha = this.opacity;
+    ctx.font = "bold 70px monospace";
+
+    ctx.fillStyle = "tomato";
+    ctx.fillText("Game Over", 425, 225);
+
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "rebeccapurple";
+    ctx.strokeText("Game Over", 425, 225);
+
+    // reset globalAlpha so other drawings are normal (not transparent)
+    ctx.globalAlpha = 1;
+  }
+};
 
 drawingLoop();
 
@@ -98,12 +125,18 @@ function drawEverything() {
   // draw our hero Celine
   celine.drawMe();
 
-  // draw pipes
-  pipe1.drawMe();
+  allPipes.forEach(function (onePipe) {
+    // draw pipes
+    onePipe.drawMe();
 
-  if (rectangleCollision(celine, pipe1)) {
-    celine.isCrashed = true;
-    pipe1.isCrashed = true;
+    if (rectangleCollision(celine, onePipe)) {
+      celine.isCrashed = true;
+      onePipe.isCrashed = true;
+    }
+  });
+
+  if (celine.isCrashed) {
+    gameOver.drawMe();
   }
 }
 
